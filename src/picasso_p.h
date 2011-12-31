@@ -443,7 +443,7 @@ struct context_state {
 	context_state()
 		: next(0)
 		, filter(FILTER_BILINEAR)
-		, font(ps_font_ref(_default_font()))
+		, font(_default_font())
 		, antialias(true)
 		, gamma(1.0)
 		, alpha(1.0)
