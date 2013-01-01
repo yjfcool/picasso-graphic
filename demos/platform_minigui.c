@@ -131,7 +131,7 @@ static int PlatformProc(HWND hWnd, int message, WPARAM wParam, LPARAM lParam)
 				ps_initialize();
 
 				canvas = ps_canvas_create_with_data(pdr, fmt, w, h, p);
-				context = ps_context_create(canvas);
+				context = ps_context_create(canvas, CONTEXT_SHARED);
 				on_init(context, width, height);	
 			}
 			break;

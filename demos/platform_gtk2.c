@@ -80,7 +80,7 @@ static void init_pixbuf()
 	gchar* buf = gdk_pixbuf_get_pixels(pixbuf);
 	gint stride = gdk_pixbuf_get_rowstride(pixbuf);
 	canvas = ps_canvas_create_with_data(buf, fmt, width, height, stride);
-	context = ps_context_create(canvas);
+	context = ps_context_create(canvas, CONTEXT_SHARED);
 	on_init(context, width, height);
 }
 

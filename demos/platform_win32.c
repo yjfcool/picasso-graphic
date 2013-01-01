@@ -130,7 +130,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			ps_initialize();
 
 			canvas = ps_canvas_create_with_data(buffer, fmt, width, height, width*CBYTE);
-			context = ps_context_create(canvas);
+			context = ps_context_create(canvas, CONTEXT_SHARED);
 			on_init(context, width, height);	
 		}
 		break;

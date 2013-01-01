@@ -13,25 +13,23 @@
 
 namespace picasso {
 
-#if ENABLE(LOW_MEMORY)
 static font_engine_freetype_int32 g_engine;
-#endif
 
-font_engine::font_engine()
-#if !ENABLE(LOW_MEMORY)
-	: m_engine(new font_engine_freetype_int32)
-#else
-	: m_engine(&g_engine)
-#endif
+font_engine::font_engine(bool shared)
+	: m_engine(0)
+	, m_shared(shared)
 {
+	if (shared)
+		m_engine = &g_engine;
+	else
+		m_engine = new font_engine_freetype_int32;
 }
 
 
 font_engine::~font_engine()
 {
-#if !ENABLE(LOW_MEMORY)
-	delete m_engine;
-#endif
+	if (!m_shared)
+		delete m_engine;
 }
 
 void font_engine::resolution(unsigned d)

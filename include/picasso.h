@@ -297,10 +297,25 @@ PEXPORT ps_status PICAPI ps_last_status(void);
  */
 
 /**
- * \fn ps_context* ps_context_create(ps_canvas* canvas)
+ * \brief Context create type.
+ */
+typedef enum _ps_context_type {
+	/**
+	 * Context resource shared. 
+	 */
+	CONTEXT_SHARED,
+	/**
+	 * Context resource thread safe.
+	 */
+	CONTEXT_THREAD,
+}ps_context_type;
+
+/**
+ * \fn ps_context* ps_context_create(ps_canvas* canvas, ps_context_type type)
  * \brief Create a new graphic context for a canvas.
  *
  * \param canvas  Pointer to an existing canvas object.
+ * \param type    Create a context with the shared resources or not,
  *
  * \return If the function succeeds, the return value is the pointer to a new context object.
  *         If the function fails, the return value is NULL.
@@ -309,7 +324,7 @@ PEXPORT ps_status PICAPI ps_last_status(void);
  *
  * \sa ps_context_set_canvas, ps_context_get_canvas, ps_context_ref, ps_context_unref
  */
-PEXPORT ps_context* PICAPI ps_context_create(ps_canvas* canvas);
+PEXPORT ps_context* PICAPI ps_context_create(ps_canvas* canvas, ps_context_type type);
 
 /**
  * \fn ps_context* ps_context_ref(ps_context* ctx)

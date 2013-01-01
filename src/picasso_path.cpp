@@ -22,9 +22,9 @@ ps_path* PICAPI ps_path_create(void)
 {
     ps_path *p = (ps_path*)malloc(sizeof(ps_path));
     if (p) {
-		p->refcount = 1;
+        p->refcount = 1;
         new ((void*)&(p->path)) path_storage;
-		global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return p;
     } else {
         global_status = STATUS_OUT_OF_MEMORY;
@@ -34,55 +34,55 @@ ps_path* PICAPI ps_path_create(void)
 
 ps_path* PICAPI ps_path_create_copy(const ps_path* path)
 {
-	if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
-	ps_path *p = (ps_path*)malloc(sizeof(ps_path));
-	if (p) {
-		p->refcount = 1;
+    ps_path *p = (ps_path*)malloc(sizeof(ps_path));
+    if (p) {
+        p->refcount = 1;
         new ((void*)&(p->path)) path_storage;
-		p->path = path->path;
-		global_status = STATUS_SUCCEED;
+        p->path = path->path;
+        global_status = STATUS_SUCCEED;
         return p;
-	} else {
+    } else {
         global_status = STATUS_OUT_OF_MEMORY;
         return 0;
-	}
+    }
 }
 
 ps_path* PICAPI ps_path_ref(ps_path* path)
 {
-	if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
-		return 0;
-	}
+    if (!path) {
+        global_status = STATUS_INVALID_ARGUMENT;
+        return 0;
+    }
 
-	path->refcount++;
-	global_status = STATUS_SUCCEED;
-	return path;
+    path->refcount++;
+    global_status = STATUS_SUCCEED;
+    return path;
 }
 
 void PICAPI ps_path_unref(ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	path->refcount--;
-	if (path->refcount <= 0) {
-		(&path->path)->path_storage::~path_storage();
-		free(path);
-	}
-	global_status = STATUS_SUCCEED;
+    path->refcount--;
+    if (path->refcount <= 0) {
+        (&path->path)->path_storage::~path_storage();
+        free(path);
+    }
+    global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_path_move_to(ps_path* path, const ps_point* p)
 {
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
     path->path.move_to((float)p->x, (float)p->y);
@@ -92,7 +92,7 @@ void PICAPI ps_path_move_to(ps_path* path, const ps_point* p)
 void PICAPI ps_path_line_to(ps_path* path, const ps_point* p)
 {
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -102,17 +102,17 @@ void PICAPI ps_path_line_to(ps_path* path, const ps_point* p)
 
 void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, const ps_point* ep)
 {
-	if (!path || !tp || !ep || r<0) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!path || !tp || !ep || r<0) {
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
-	}
+    }
 
-	ps_point sp;
-	sp.x = path->path.last_x();
-	sp.y = path->path.last_y();
+    ps_point sp;
+    sp.x = path->path.last_x();
+    sp.y = path->path.last_y();
     if ((tp->x == sp.x && tp->y == sp.y) || (tp->x == ep->x && tp->y == ep->y) || r == 0.f) {
         ps_path_line_to(path, tp);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
     ps_point p1p0 = {(sp.x - tp->x), (sp.y - tp->y)};
@@ -124,7 +124,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
     // all points on a line logic
     if (cos_phi == -1) {
         ps_path_line_to(path, tp);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
 
@@ -134,7 +134,7 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
         float factor_max = max_length / p1p0_length;
         ps_point np  = {(sp.x + factor_max * p1p0.x), (sp.y + factor_max * p1p0.y)};
         ps_path_line_to(path, &np);
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return;
     }
 
@@ -151,13 +151,13 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
     float cos_alpha = float((orth_p1p0.x * p1p2.x + orth_p1p0.y * p1p2.y) / (orth_p1p0_length * p1p2_length));
     if (cos_alpha < 0.f)
         orth_p1p0.x = -orth_p1p0.x;
-	    orth_p1p0.y = -orth_p1p0.y;
+        orth_p1p0.y = -orth_p1p0.y;
 
     ps_point p = {(t_p1p0.x + factor_ra * orth_p1p0.x), (t_p1p0.y + factor_ra * orth_p1p0.y)};
 
     // calculate angles for addArc
     orth_p1p0.x = -orth_p1p0.x;
-	orth_p1p0.y = -orth_p1p0.y;
+    orth_p1p0.y = -orth_p1p0.y;
     float sa = (float)acos(orth_p1p0.x / orth_p1p0_length);
     if (orth_p1p0.y < 0.f)
         sa = 2 * PI - sa;
@@ -179,14 +179,14 @@ void PICAPI ps_path_tangent_arc_to(ps_path* path, double r, const ps_point* tp, 
 
     ps_path_line_to(path, &t_p1p0);
 
-	ps_path_add_arc(path, &p, r, sa, ea, clockwise);
+    ps_path_add_arc(path, &p, r, sa, ea, clockwise);
     global_status = STATUS_SUCCEED;
 }
 
 void PICAPI ps_path_arc_to(ps_path* path, double rx, double ry, double a, ps_bool large, ps_bool cw, const ps_point* ep)
 {
     if (!path || !ep || rx <= 0.0 || ry <= 0.0) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -194,7 +194,7 @@ void PICAPI ps_path_arc_to(ps_path* path, double rx, double ry, double a, ps_boo
     float y1 = path->path.last_y();
 
     bezier_arc_svg arc(float(x1), float(y1), float(rx), float(ry), float(a), 
-						(large?true:false), (cw?true:false), float(ep->x), float(ep->y));
+                        (large?true:false), (cw?true:false), float(ep->x), float(ep->y));
     conv_curve<bezier_arc_svg> cr(arc);
     if (_is_closed_path(path->path))
         path->path.concat_path(cr, 0);
@@ -206,12 +206,12 @@ void PICAPI ps_path_arc_to(ps_path* path, double rx, double ry, double a, ps_boo
 void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point* cp2, const ps_point* ep)
 {
     if (!path || !cp1 || !cp2 || !ep) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     curve4 c(path->path.last_x(), path->path.last_y(), 
-		float(cp1->x), float(cp1->y), float(cp2->x), float(cp2->y), float(ep->x), float(ep->y));
+        float(cp1->x), float(cp1->y), float(cp2->x), float(cp2->y), float(ep->x), float(ep->y));
     if (_is_closed_path(path->path))
         path->path.concat_path(c, 0);
     else
@@ -222,12 +222,12 @@ void PICAPI ps_path_bezier_to(ps_path* path, const ps_point* cp1, const ps_point
 void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* ep)
 {
     if (!path || !cp || !ep) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     curve3 c(path->path.last_x(), path->path.last_y(), 
-					float(cp->x), float(cp->y), float(ep->x), float(ep->y));
+                    float(cp->x), float(cp->y), float(ep->x), float(ep->y));
 
     if (_is_closed_path(path->path))
         path->path.concat_path(c, 0);
@@ -239,7 +239,7 @@ void PICAPI ps_path_quad_to(ps_path* path, const ps_point* cp, const ps_point* e
 void PICAPI ps_path_sub_close(ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -250,7 +250,7 @@ void PICAPI ps_path_sub_close(ps_path* path)
 double PICAPI ps_path_get_length(const ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return (0.0);
     }
 
@@ -261,34 +261,34 @@ double PICAPI ps_path_get_length(const ps_path* path)
 unsigned int PICAPI ps_path_get_vertex_count(const ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return 0;
     }
 
     global_status = STATUS_SUCCEED;
-	return path->path.total_vertices();
+    return path->path.total_vertices();
 }
 
 ps_path_cmd PICAPI ps_path_get_vertex(const ps_path* path, unsigned int index, ps_point * point)
 {
     if (!path || !point || (index > path->path.total_vertices()-1)) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return PATH_CMD_STOP;
     }
 
-	float x = 0;
-	float y = 0;
-	unsigned cmd = path->path.vertex(index, &x, &y);
-	point->x = x;
-	point->y = y;
+    float x = 0;
+    float y = 0;
+    unsigned cmd = path->path.vertex(index, &x, &y);
+    point->x = x;
+    point->y = y;
     global_status = STATUS_SUCCEED;
-	return (ps_path_cmd)cmd;
+    return (ps_path_cmd)cmd;
 }
 
 void PICAPI ps_path_clear(ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -299,7 +299,7 @@ void PICAPI ps_path_clear(ps_path* path)
 ps_bool PICAPI ps_path_is_empty(const ps_path* path)
 {
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return False;
     }
 
@@ -311,7 +311,7 @@ ps_rect PICAPI ps_path_bounding_rect(const ps_path* path)
 {
     ps_rect r = {0, 0, 0, 0};
     if (!path) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return r;
     }
     global_status = STATUS_SUCCEED;
@@ -321,19 +321,19 @@ ps_rect PICAPI ps_path_bounding_rect(const ps_path* path)
 ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_rule rule)
 {
     if (!path || !p) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return False;
     }
 
     if (!path->path.total_vertices()) {
-		global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return False;
     }
 
     ps_rect br = ps_path_bounding_rect(path);
     if ((p->x < br.x) || (p->y < br.y) || (p->x > (br.x+br.w)) || (p->y > (br.y+br.h))) { 
-		//out of bounding rect
-		global_status = STATUS_SUCCEED;
+        //out of bounding rect
+        global_status = STATUS_SUCCEED;
         return False;
     }
 
@@ -351,7 +351,7 @@ ps_bool PICAPI ps_path_contains(const ps_path* path, const ps_point* p, ps_fill_
 void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* p2)
 {
     if (!path || !p1 || !p2) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -363,12 +363,12 @@ void PICAPI ps_path_add_line(ps_path* path, const ps_point* p1, const ps_point* 
 void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, double r, double sa, double ea, ps_bool cw)
 {
     if (!path || !cp) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
     if (r <= 0.0) {
-    	global_status = STATUS_SUCCEED;
+        global_status = STATUS_SUCCEED;
         return; //do nothing
     }
 
@@ -384,7 +384,7 @@ void PICAPI ps_path_add_arc(ps_path* path, const ps_point* cp, double r, double 
 void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* r)
 {
     if (!path || !r) {
-	global_status = STATUS_INVALID_ARGUMENT;
+    global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -399,7 +399,7 @@ void PICAPI ps_path_add_rect(ps_path* path, const ps_rect* r)
 void PICAPI ps_path_add_ellipse(ps_path* path, const ps_rect* r)
 {
     if (!path || !r) {
-	global_status = STATUS_INVALID_ARGUMENT;
+    global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
@@ -416,15 +416,15 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, double ltx,
                                                                         double lbx, double lby, double rbx, double rby)
 {
     if (!path || !r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
     }
 
-	rounded_rect rr;
-	rr.rect(float(r->x), float(r->y), float(r->x+r->w), float(r->y+r->h));
-	rr.radius(float(ltx), float(lty), float(rtx), float(rty), 
-						float(lbx), float(lby), float(rbx), float(rby));
-	rr.normalize_radius();
+    rounded_rect rr;
+    rr.rect(float(r->x), float(r->y), float(r->x+r->w), float(r->y+r->h));
+    rr.radius(float(ltx), float(lty), float(rtx), float(rty), 
+                        float(lbx), float(lby), float(rbx), float(rby));
+    rr.normalize_radius();
     if (_is_closed_path(path->path))
         path->path.concat_path(rr, 0);
     else
@@ -435,24 +435,24 @@ void PICAPI ps_path_add_rounded_rect(ps_path*path, const ps_rect* r, double ltx,
 
 void PICAPI ps_path_clipping(ps_path* r, ps_path_operation op, const ps_path* a, const ps_path* b)
 {
-	if (!r) {
-		global_status = STATUS_INVALID_ARGUMENT;
+    if (!r) {
+        global_status = STATUS_INVALID_ARGUMENT;
         return;
-	}
+    }
 
-	if (!a || !a->path.total_vertices() || !_is_closed_path(a->path)) {//invalid a 
-		r->path = b->path;
-    	global_status = STATUS_SUCCEED;
-		return;
-	}
+    if (!a || !a->path.total_vertices() || !_is_closed_path(a->path)) {//invalid a 
+        r->path = b->path;
+        global_status = STATUS_SUCCEED;
+        return;
+    }
 
-	if (!b || !b->path.total_vertices() || !_is_closed_path(b->path)) {//invalid b 
-		r->path = a->path;
-    	global_status = STATUS_SUCCEED;
-		return;
-	}
+    if (!b || !b->path.total_vertices() || !_is_closed_path(b->path)) {//invalid b 
+        r->path = a->path;
+        global_status = STATUS_SUCCEED;
+        return;
+    }
 
-	_path_operation((gpc_op_e)op, a->path, b->path, r->path);
+    _path_operation((gpc_op_e)op, a->path, b->path, r->path);
 
     global_status = STATUS_SUCCEED;
 }
@@ -490,15 +490,15 @@ bool _is_closed_path(const path_storage & path)
 
 void _path_operation(gpc_op_e op, const path_storage& a, const path_storage& b, path_storage& r)
 {
-	conv_gpc<path_storage, path_storage> 
-				gpc(const_cast<path_storage&>(a), const_cast<path_storage&>(b), op);
-	gpc.rewind(0);
-	r.remove_all();
-	float x = 0, y = 0;
-	unsigned cmd = 0;
-	while (!is_stop(cmd = gpc.vertex(&x, &y))) {
-		r.add_vertex(x, y, cmd);
-	}
+    conv_gpc<path_storage, path_storage> 
+                gpc(const_cast<path_storage&>(a), const_cast<path_storage&>(b), op);
+    gpc.rewind(0);
+    r.remove_all();
+    float x = 0, y = 0;
+    unsigned cmd = 0;
+    while (!is_stop(cmd = gpc.vertex(&x, &y))) {
+        r.add_vertex(x, y, cmd);
+    }
 }
 
 }

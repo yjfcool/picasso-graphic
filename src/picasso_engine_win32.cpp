@@ -14,7 +14,7 @@
 
 namespace picasso {
 
-font_engine::font_engine()
+font_engine::font_engine(bool shared)
 	: m_engine(new font_engine_win32_tt_int32(::GetDC(0)))
 {
 }
