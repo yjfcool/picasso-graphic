@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			ps_initialize();
 			
 			canvas = ps_canvas_create_with_data(buffer, fmt, 640, 480, 640*CBYTE);
-			context = ps_context_create(canvas);
+			context = ps_context_create(canvas, CONTEXT_SHARED);
 			init_context(context, canvas);	
 			set_image_data(ibmp.bmBits, fmt, ibmp.bmWidth, ibmp.bmHeight, ibmp.bmWidth*CBYTE);
 			set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmWidth*CBYTE);

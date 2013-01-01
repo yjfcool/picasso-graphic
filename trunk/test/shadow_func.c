@@ -77,7 +77,7 @@ void set_image_data(unsigned char* data, ps_color_format fmt, int w, int h, int 
 	ps_color xol = {0.23, 0.45, 0.56, 1};
 	pi = ps_image_create_with_data(data, fmt, w, h, p);
 	cx = ps_canvas_create(fmt, 200, 200);
-	gt = ps_context_create(cx);
+	gt = ps_context_create(cx, CONTEXT_SHARED);
 	ps_set_source_color(gt, &xol);
 	ps_clear(gt);
 	ps_context_unref(gt);

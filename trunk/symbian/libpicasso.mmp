@@ -1,0 +1,53 @@
+//
+// Picasso project for Symbian platform
+//
+
+// Copyright 2010 by
+// Zhang JiPeng (onecoolx@gmail.com)
+
+TARGET		libpicasso.lib
+TARGETTYPE	lib
+
+SOURCEPATH	../src
+
+SOURCE \
+		picasso.cpp \
+		picasso_canvas.cpp \
+		picasso_matrix.cpp \
+		picasso_image.cpp \
+		picasso_pattern.cpp \
+		picasso_path.cpp \
+		picasso_gradient.cpp \
+		picasso_font.cpp \
+		picasso_gpc.cpp \
+		picasso_mask.cpp \
+		picasso_engine_win32.cpp \
+		picasso_engine_freetype2.cpp \
+		picasso_freetype2_load.cpp
+
+SOURCEPATH	../src/lib
+
+SOURCE \
+		agg_arc.cpp \
+		agg_bezier_arc.cpp \
+		agg_bspline.cpp \
+		agg_curves.cpp \
+		agg_font_freetype.cpp \
+		agg_font_win32_tt.cpp \
+		agg_image_filters.cpp \
+		agg_line_aa_basics.cpp \
+		agg_line_profile_aa.cpp \
+		agg_rounded_rect.cpp \
+		agg_sqrt_tables.cpp \
+		agg_trans_affine.cpp \
+		agg_vcgen_bspline.cpp \
+		agg_vcgen_dash.cpp \
+		agg_vcgen_smooth_poly1.cpp \
+		agg_vcgen_stroke.cpp 
+
+
+USERINCLUDE	../src
+
+USERINCLUDE	../src/include
+
+SYSTEMINCLUDE   \epoc32\include \epoc32\include\stdapis \epoc32\include\stdapis\stlport

@@ -287,7 +287,7 @@ struct font_engine {
 	typedef scanline_storage_aa8                      scanlines_aa_type;
 	typedef scanline_storage_bin                      scanlines_bin_type;
 
-	font_engine();
+	font_engine(bool use_shared);
 	~font_engine();
 
     void resolution(unsigned);
@@ -338,6 +338,7 @@ private:
 	font_engine_win32_tt_int32 *m_engine;
 #else
 	font_engine_freetype_int32 *m_engine;
+	bool m_shared;
 #endif
 };
 
@@ -437,7 +438,7 @@ struct shadow_state {
 	float blur;
 	rgba color;
 };
-
+    
 // context state object
 struct context_state {
 	context_state()
@@ -533,6 +534,7 @@ struct _ps_context {
     ps_canvas* canvas;
 	picasso::context_state* state;
 	ps_bool font_antialias;
+	ps_bool shared;
 	picasso::font_engine* fonts;
     //agg object
 	font_cache_manager<picasso::font_engine>* cache;
@@ -684,7 +686,7 @@ public:
     virtual const int8u* next_x() = 0;
     virtual const int8u* next_y() = 0;
 };
-
+    
 //inner functions
 #if ENABLE(FREE_TYPE2)
 bool _load_fonts(void);
