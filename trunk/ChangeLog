@@ -5,4 +5,8 @@
 	Fix default font object mem leak bug.
 	
 2012-12-31: Version 1.2.5
-        Add context thread safe or shared support.
+    Add context thread safe or shared support.
+
+2013-02-12: Version 2.0.0
+	Update code version 2.0.0 alpha.
+

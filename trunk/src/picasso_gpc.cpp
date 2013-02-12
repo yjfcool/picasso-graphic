@@ -32,12 +32,11 @@ Copyright: (C) 1997-2004, Advanced Interfaces Group,
            software for any purpose. It is provided solely "as is".
 */
 
-#include "pconfig.h"
+#include "common.h"
 #include "picasso_gpc.h"
 
 #include <float.h>
 #include <math.h>
-#include <stdlib.h>
 
 namespace picasso {
 
@@ -71,7 +70,7 @@ namespace picasso {
 */
 
 #define GPC_EPSILON (DBL_EPSILON)
-#define EQ(a, b)           (fabs((a) - (b)) <= GPC_EPSILON)
+#define EQ(a, b)           (Fabs((a) - (b)) <= DBL_TO_SCALAR(GPC_EPSILON))
 
 #define PREV_INDEX(i, n)   ((i - 1 + n) % n)
 #define NEXT_INDEX(i, n)   ((i + 1    ) % n)
@@ -101,10 +100,10 @@ namespace picasso {
                             (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
 
 #define MALLOC(p, b, s, t) {if ((b) > 0) { \
-                            p= (t*)malloc(b); if (!(p)) { \
+                            p= (t*)mem_malloc(b); if (!(p)) { \
                             exit(0);}} else p= NULL;}
 
-#define FREE(p)            {if (p) {free(p); (p)= NULL;}}
+#define FREE(p)            {if (p) {mem_free(p); (p)= NULL;}}
 
 
 /*
@@ -670,7 +669,7 @@ static void add_st_edge(st_node **st, it_node **it, edge_node *edge,
 
     /* If new edge and ST edge don't cross */
     if ((edge->xt >= (*st)->xt) || (edge->dx == (*st)->dx) || 
-        (fabs(den) <= DBL_EPSILON))
+        (Fabs(den) <= DBL_EPSILON))
     {
       /* No intersection - insert edge here (before the ST edge) */
       existing_node= *st;
@@ -1172,7 +1171,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
       if (next_edge->bundle[ABOVE][next_edge->type])
       {
         if (EQ(e0->xb, next_edge->xb) && EQ(e0->dx, next_edge->dx)
-     && (e0->top.y != yb))
+	 && (e0->top.y != yb))
         {
           next_edge->bundle[ABOVE][ next_edge->type]^= 
             e0->bundle[ABOVE][ next_edge->type];
@@ -1327,10 +1326,10 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
             break;
           case IMM:
             if (xb != px)
-        {
+	    {
               add_right(cf, xb, yb);
               px= xb;
-        }
+	    }
             merge_left(cf, edge->outp[BELOW], out_poly);
             edge->outp[BELOW]= NULL;
             add_local_min(&out_poly, edge, xb, yb);
@@ -1338,10 +1337,10 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
             break;
           case EMM:
             if (xb != px)
-        {
+	    {
               add_left(cf, xb, yb);
               px= xb;
-        }
+	    }
             merge_right(cf, edge->outp[BELOW], out_poly);
             edge->outp[BELOW]= NULL;
             add_local_min(&out_poly, edge, xb, yb);
@@ -1382,7 +1381,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
 
         /* Copy bundle head state to the adjacent tail edge if required */
         if ((edge->bstate[BELOW] == BUNDLE_HEAD) && prev_edge)
-    {
+	{
           if (prev_edge->bstate[BELOW] == BUNDLE_TAIL)
           {
             prev_edge->outp[BELOW]= edge->outp[BELOW];
@@ -1390,8 +1389,8 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
             if (prev_edge->prev)
               if (prev_edge->prev->bstate[BELOW] == BUNDLE_TAIL)
                 prev_edge->bstate[BELOW]= BUNDLE_HEAD;
-      }
-    }
+	  }
+	}
       }
       else
       {
@@ -1417,7 +1416,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
         /* Only generate output for contributing intersections */
         if ((e0->bundle[ABOVE][CLIP] || e0->bundle[ABOVE][SUBJ])
          && (e1->bundle[ABOVE][CLIP] || e1->bundle[ABOVE][SUBJ]))
-    {
+	{
           p= e0->outp[ABOVE];
           q= e1->outp[ABOVE];
           ix= intersect->point.x;
@@ -1467,7 +1466,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
              || (in[SUBJ] ^ e1->bundle[ABOVE][SUBJ] ^ e0->bundle[ABOVE][SUBJ]);
             break;
           }
-      
+	  
           vclass= tr + (tl << 1) + (br << 2) + (bl << 3);
 
           switch (vclass)
@@ -1551,17 +1550,17 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
           default:
             break;
           } /* End of switch */
-    } /* End of contributing intersection conditional */
+	} /* End of contributing intersection conditional */
 
         /* Swap bundle sides in response to edge crossing */
         if (e0->bundle[ABOVE][CLIP])
-      e1->bside[CLIP]= !e1->bside[CLIP];
+	  e1->bside[CLIP]= !e1->bside[CLIP];
         if (e1->bundle[ABOVE][CLIP])
-      e0->bside[CLIP]= !e0->bside[CLIP];
+	  e0->bside[CLIP]= !e0->bside[CLIP];
         if (e0->bundle[ABOVE][SUBJ])
-      e1->bside[SUBJ]= !e1->bside[SUBJ];
+	  e1->bside[SUBJ]= !e1->bside[SUBJ];
         if (e1->bundle[ABOVE][SUBJ])
-      e0->bside[SUBJ]= !e0->bside[SUBJ];
+	  e0->bside[SUBJ]= !e0->bside[SUBJ];
 
         /* Swap e0 and e1 bundles in the AET */
         prev_edge= e0->prev;
@@ -1632,7 +1631,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
           edge->bundle[BELOW][CLIP]= edge->bundle[ABOVE][CLIP];
           edge->bundle[BELOW][SUBJ]= edge->bundle[ABOVE][SUBJ];
           edge->xb= edge->xt;
-          }
+	      }
         edge->outp[ABOVE]= NULL;
       }
     }
