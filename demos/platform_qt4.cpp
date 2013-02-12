@@ -50,7 +50,7 @@ public:
 		fmt = COLOR_FORMAT_BGRA;
     	image = QImage(g_width, g_height, QImage::Format_RGB32);
 		canvas = ps_canvas_create_with_data(image.bits(), fmt, g_width, g_height, image.bytesPerLine());
-		context = ps_context_create(canvas, CONTEXT_SHARED);
+		context = ps_context_create(canvas);
 		on_init(context, g_width, g_height);
 	}
 

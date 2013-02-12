@@ -71,7 +71,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= 0;
-	wcex.lpszClassName	= "testbmp";
+	wcex.lpszClassName	= L"testbmp";
 	wcex.hIconSm		= 0;
 	
 	return RegisterClassEx(&wcex);
@@ -84,11 +84,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	unsigned int tsize;
 	hInst = hInstance; // Store instance handle in our global variable
 	
-	sbmp = (HBITMAP)LoadImage(hInstance, "selt2.bmp", IMAGE_BITMAP, 0 , 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
+	sbmp = (HBITMAP)LoadImage(hInstance, L"selt2.bmp", IMAGE_BITMAP, 0 , 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
 	
 	GetObject(sbmp, sizeof(BITMAP), (LPVOID)&ibmp);
 	
-	tbmp = (HBITMAP)LoadImage(hInstance, "pat.bmp", IMAGE_BITMAP, 0 , 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
+	tbmp = (HBITMAP)LoadImage(hInstance, L"pat.bmp", IMAGE_BITMAP, 0 , 0, LR_LOADFROMFILE | LR_DEFAULTCOLOR);
 	
 	GetObject(tbmp, sizeof(BITMAP), (LPVOID)&abmp);
 	
@@ -100,7 +100,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	abmp.bmBits = calloc(1, tsize);
 	GetBitmapBits(tbmp, tsize, abmp.bmBits);
 	
-	hWnd = CreateWindow("testbmp", "Test picasso", WS_OVERLAPPEDWINDOW,
+	hWnd = CreateWindow(L"testbmp", L"Test picasso", WS_OVERLAPPEDWINDOW,
 		0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 	
 	if (!hWnd)
@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			ps_initialize();
 			
 			canvas = ps_canvas_create_with_data(buffer, fmt, 640, 480, 640*CBYTE);
-			context = ps_context_create(canvas, CONTEXT_SHARED);
+			context = ps_context_create(canvas);
 			init_context(context, canvas);	
 			set_image_data(ibmp.bmBits, fmt, ibmp.bmWidth, ibmp.bmHeight, ibmp.bmWidth*CBYTE);
 			set_pattern_data(abmp.bmBits, fmt, abmp.bmWidth, abmp.bmHeight, abmp.bmWidth*CBYTE);
