@@ -161,10 +161,10 @@ void painter::render_gamma(context_state* state, raster_adapter& raster)
 {
     if (state->antialias) {
         raster.set_antialias(true);
-        raster.set_gamma_power(state->gamma);       
+        raster.set_gamma_power(state->gamma);        
     } else {
         raster.set_antialias(false);
-        raster.set_gamma_power(state->gamma);       
+        raster.set_gamma_power(state->gamma);        
     }
 }
 

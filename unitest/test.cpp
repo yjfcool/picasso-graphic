@@ -5,9 +5,10 @@
 TEST(SystemDeathTest, Init) 
 { 
     printf("picasso initialize\n");
-	ASSERT_NE(False, ps_initialize()); 
-	int v = ps_version(); 
-	ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
+    ASSERT_NE(False, ps_initialize()); 
+    int v = ps_version(); 
+    fprintf(stderr, "picasso version %d \n", v);
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
 } 
 
 
@@ -15,7 +16,7 @@ TEST(SystemDeathTest, Init)
 TEST(System, Shutdown) 
 { 
     printf("picasso shutdown\n");
-	ps_shutdown(); 
-	ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
+    ps_shutdown(); 
+    ASSERT_EQ(STATUS_SUCCEED, ps_last_status()); 
 }
 

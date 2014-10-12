@@ -41,7 +41,7 @@ public:
     void set_stroke_attr_val(int idx, scalar val);
     void set_fill_attr(int idx, int val);
 
-    void add_shape(const vertex_source& vs, unsigned int id=0); 
+    void add_shape(const vertex_source& vs, unsigned int id=0);    
     void reset(void);
     void commit(void);
 
