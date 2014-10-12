@@ -22,6 +22,7 @@ public:
     ~rendering_buffer();
 public:
     void attach(byte* buf, unsigned int width, unsigned int height, int stride);
+    void replace(byte* buf, unsigned int width, unsigned int height, int stride);
     bool is_empty(void);
 
     byte * buffer(void) const;

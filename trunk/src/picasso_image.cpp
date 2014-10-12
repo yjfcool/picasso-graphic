@@ -186,7 +186,7 @@ ps_image* PICAPI ps_image_create_from_image(ps_image* i, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (double)i->buffer.width(), (double)i->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)i->buffer.width(), (float)i->buffer.height()}; 
     if (!r) {
         //Note: if rect is NULL, It equal reference.
         global_status = STATUS_SUCCEED;
@@ -211,7 +211,7 @@ ps_image* PICAPI ps_image_create_from_image(ps_image* i, const ps_rect* r)
         int bpp = picasso::_byte_pre_color(i->fmt);
         new ((void*)&(img->buffer)) picasso::rendering_buffer; 
         img->buffer.attach(i->buffer.buffer()+_iround(rc.y*i->buffer.stride()+rc.x*bpp), 
-                                    _iround(rc.w), _iround(rc.h), i->buffer.stride());
+                                       _iround(rc.w), _iround(rc.h), i->buffer.stride());
         img->buffer.set_transparent(i->buffer.is_transparent());
         img->buffer.set_color_channel(i->buffer.get_color_channel());
         global_status = STATUS_SUCCEED;
@@ -234,7 +234,7 @@ ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* c, const ps_rect* r)
         return 0;
     }
 
-    ps_rect rc = {0, 0, (double)c->buffer.width(), (double)c->buffer.height()}; 
+    ps_rect rc = {0, 0, (float)c->buffer.width(), (float)c->buffer.height()}; 
     if (r) {
         if (r->x > 0)
             rc.x = r->x;
@@ -255,7 +255,7 @@ ps_image* PICAPI ps_image_create_from_canvas(ps_canvas* c, const ps_rect* r)
         int bpp = picasso::_byte_pre_color(c->fmt);
         new ((void*)&(img->buffer)) picasso::rendering_buffer; 
         img->buffer.attach(c->buffer.buffer()+_iround(rc.y*c->buffer.stride()+rc.x*bpp), 
-                                    _iround(rc.w), _iround(rc.h), c->buffer.stride());
+                                       _iround(rc.w), _iround(rc.h), c->buffer.stride());
         img->buffer.set_transparent(true);
         global_status = STATUS_SUCCEED;
         return img;
@@ -325,8 +325,8 @@ ps_size PICAPI ps_image_get_size(const ps_image* img)
         return size;
     }
 
-    size.w = img->buffer.width();
-    size.h = img->buffer.height();
+    size.w = (float)img->buffer.width();
+    size.h = (float)img->buffer.height();
     global_status = STATUS_SUCCEED;
     return size;
 }
@@ -377,8 +377,8 @@ void PICAPI ps_image_set_transparent_color(ps_image* img, const ps_color* c)
     if (!c) {
         img->buffer.clear_color_channel(); 
     } else {
-        img->buffer.set_color_channel(picasso::rgba(DBL_TO_SCALAR(c->r),
-                        DBL_TO_SCALAR(c->g),DBL_TO_SCALAR(c->b),DBL_TO_SCALAR(c->a)));
+        img->buffer.set_color_channel(picasso::rgba(FLT_TO_SCALAR(c->r),
+                        FLT_TO_SCALAR(c->g),FLT_TO_SCALAR(c->b),FLT_TO_SCALAR(c->a)));
     }
     global_status = STATUS_SUCCEED;
 }

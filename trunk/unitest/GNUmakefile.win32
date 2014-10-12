@@ -1,7 +1,8 @@
 
-CC=gcc -g -pg
-#CC=gcc -O2
-INC=-I../include/ -I../ -I../build/
+#CC=gcc -g -pg
+CC=gcc -Wall -O3
+
+INC=-I../include/ -I../ -I../build/ -I./include
 CFLAGS= -D_DEBUG
 
 SYSTEM_LIBS = -lgtest -lgtest_main -lgdi32 -lstdc++ -lfreetype -lm

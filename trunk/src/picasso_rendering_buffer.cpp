@@ -41,6 +41,11 @@ void rendering_buffer::attach(byte* buf, unsigned int width, unsigned int height
     m_impl = get_system_device()->create_rendering_buffer(buf, width, height, stride);
 }
 
+void rendering_buffer::replace(byte* buf, unsigned int width, unsigned int height, int stride)
+{
+    m_impl->init(buf, width, height, stride);
+}
+
 bool rendering_buffer::is_empty(void)
 {
     return !m_impl;
